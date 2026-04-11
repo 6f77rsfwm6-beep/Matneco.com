@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matneco Industries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #e8e4dc;
+    --paper: #0c0b09;
+    --surface: #141210;
+    --muted: #7a756c;
+    --rule: #2a2720;
+    --gold: #b8964a;
+    --gold-dim: #6b5628;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .wordmark {
+    font-size: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+  }
+  .tagline-top {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .syracuse-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .flag-icon { width: 26px; height: 17px; flex-shrink: 0; display: block; }
+  main {
+    flex: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 5rem 3rem;
+  }
+  .lede {
+    border-left: 2px solid var(--gold-dim);
+    padding-left: 2rem;
+    margin-bottom: 5rem;
+  }
+  .lede h1 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+  }
+  .lede h1 em { font-style: italic; color: var(--gold); }
+  .lede p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 580px;
+    margin-bottom: 1rem;
+  }
+  .lede p:last-child { margin-bottom: 0; }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 3.5rem 0;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  .products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--rule);
+  }
+  .product {
+    padding: 2rem 2rem 2.5rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: background 0.15s;
+  }
+  .product:hover { background: rgba(255,255,255,0.03); }
+  .product:nth-child(3n) { border-right: none; }
+  .product:nth-last-child(-n+3) { border-bottom: none; }
+  .product-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.85rem;
+  }
+  .product h2 {
+    font-size: 1.35rem;
+    font-weight: 400;
+    margin-bottom: 0.65rem;
+  }
+  .product p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+  }
+  .product-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .product-link::after { content: '→'; }
+  .product.inactive .product-link { color: var(--muted); }
+  .product.inactive .product-link::after {
+    content: '(forthcoming)';
+    font-style: italic;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.88rem;
+    letter-spacing: 0;
+  }
+  .product.joke .product-link { color: var(--muted); }
+  .product.joke .product-link::after {
+    content: '(never)';
+    font-style: italic;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.88rem;
+    letter-spacing: 0;
+  }
+  .manifesto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+  .manifesto-item .item-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .manifesto-item p { font-size: 1rem; color: var(--muted); line-height: 1.7; }
+  .fine-print {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+    font-style: italic;
+  }
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  @media (max-width: 800px) {
+    header, main, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    main { padding-top: 3rem; padding-bottom: 3rem; }
+    .header-right { align-items: flex-start; }
+    .products { grid-template-columns: 1fr 1fr; }
+    .product:nth-child(3n) { border-right: 1px solid var(--rule); }
+    .product:nth-child(2n) { border-right: none; }
+    .product:nth-last-child(-n+2) { border-bottom: none; }
+    .product:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+    .manifesto { grid-template-columns: 1fr; gap: 2rem; }
+  }
+  @media (max-width: 500px) {
+    .products { grid-template-columns: 1fr; }
+    .product { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+    .product:last-child { border-bottom: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="wordmark">Matneco Industries</span>
+  <div class="header-right">
+    <span class="tagline-top">40 Years of Corporate Excellence</span>
+    <span class="syracuse-badge">
+      <!-- First Light Flag of Syracuse, NY -->
+      <svg class="flag-icon" viewBox="0 0 52 34" xmlns="http://www.w3.org/2000/svg" aria-label="First Light Flag of Syracuse, New York">
+        <rect width="52" height="34" fill="#1a3a6b"/>
+        <!-- Sun body -->
+        <circle cx="26" cy="17" r="5.5" fill="#f0c040"/>
+        <!-- Cardinal rays -->
+        <rect x="24.5" y="4" width="3" height="6" rx="1.2" fill="#f0c040"/>
+        <rect x="24.5" y="24" width="3" height="6" rx="1.2" fill="#f0c040"/>
+        <rect x="4" y="15.5" width="6" height="3" rx="1.2" fill="#f0c040"/>
+        <rect x="42" y="15.5" width="6" height="3" rx="1.2" fill="#f0c040"/>
+        <!-- Diagonal rays -->
+        <rect x="33.5" y="6.5" width="3" height="6" rx="1.2" fill="#f0c040" transform="rotate(45 35 9.5)"/>
+        <rect x="14" y="6.5" width="3" height="6" rx="1.2" fill="#f0c040" transform="rotate(-45 15.5 9.5)"/>
+        <rect x="33.5" y="22" width="3" height="6" rx="1.2" fill="#f0c040" transform="rotate(-45 35 25)"/>
+        <rect x="14" y="22" width="3" height="6" rx="1.2" fill="#f0c040" transform="rotate(45 15.5 25)"/>
+      </svg>
+      Always Salty
+    </span>
+  </div>
+</header>
+
+<main>
+  <div class="lede">
+    <h1>We built what<br><em>Silicon Valley</em><br>was too greedy to.</h1>
+    <p>Somewhere between the fourth price hike and the fourteenth password-sharing crackdown, it became clear that the major streaming platforms had confused "subscriber" with "revenue unit." We found that unacceptable.</p>
+    <p>Matneco Industries develops private media networks and household technology for families who prefer their viewing habits stay between themselves and their television. No behavioral profiles. No dynamic pricing. No email explaining that the price increase is actually good for you.</p>
+  </div>
+
+  <p class="section-label">Our products</p>
+
+  <div class="products">
+
+    <a class="product" href="/login.html">
+      <span class="product-tag">Streaming</span>
+      <h2>Matneco+</h2>
+      <p>Private family streaming. High-quality sources, every device, no algorithm deciding what you wanted to watch based on what you watched at 2am. The password is yours to keep.</p>
+      <span class="product-link">Access</span>
+    </a>
+
+    <a class="product inactive" href="#">
+      <span class="product-tag">Broadcast</span>
+      <h2>Descrambler</h2>
+      <p>Live TV channels with rotating genre programming and a scrolling guide. The experience cable promised before they started charging you a separate fee for the remote.</p>
+      <span class="product-link">Coming soon</span>
+    </a>
+
+    <a class="product inactive" href="#">
+      <span class="product-tag">Household</span>
+      <h2>MoonBase</h2>
+      <p>Home management for the whole family. Meals, tasks, and shared logistics — none of which are forwarded to third-party partners to optimize your household's purchase journey.</p>
+      <span class="product-link">Coming soon</span>
+    </a>
+
+    <a class="product joke" href="#">
+      <span class="product-tag">Social</span>
+      <h2>Matneco Connect</h2>
+      <p>A social network where your posts are shown to your followers, in order, without a sponsored post every third item reminding you that you could be seeing fewer sponsored posts.</p>
+      <span class="product-link">Status</span>
+    </a>
+
+    <a class="product joke" href="#">
+      <span class="product-tag">Artificial Intelligence</span>
+      <h2>Matneco Mind</h2>
+      <p>An AI assistant that answers your question without first asking if you'd like to upgrade. Does not refer to itself as a "co-pilot." Has not filed for an IPO.</p>
+      <span class="product-link">Status</span>
+    </a>
+
+    <a class="product joke" href="#">
+      <span class="product-tag">Navigation</span>
+      <h2>Matneco Maps</h2>
+      <p>Directions to where you are actually going. Does not reroute you past a sponsored location. Does not share your commute pattern with your insurance provider.</p>
+      <span class="product-link">Status</span>
+    </a>
+
+    <a class="product joke" href="#">
+      <span class="product-tag">Storage</span>
+      <h2>Matneco Cloud</h2>
+      <p>Fifteen gigabytes. Free. Forever. Not fifteen gigabytes shared across six devices with a notification suggesting you upgrade to make room for photos you took last Tuesday.</p>
+      <span class="product-link">Status</span>
+    </a>
+
+    <a class="product joke" href="#">
+      <span class="product-tag">Search</span>
+      <h2>Matneco Search</h2>
+      <p>Returns what you searched for. The first result is the most relevant result, not the company that paid the most to appear as though it were. No "People Also Ask" accordion.</p>
+      <span class="product-link">Status</span>
+    </a>
+
+    <a class="product joke" href="#">
+      <span class="product-tag">Smart Home</span>
+      <h2>Matneco Ambient</h2>
+      <p>A smart speaker that plays music and answers questions. Does not listen between questions. Does not have a shopping mode. Has never, not once, made a purchase on your behalf.</p>
+      <span class="product-link">Status</span>
+    </a>
+
+  </div>
+
+  <hr class="divider">
+
+  <p class="section-label">Our position</p>
+
+  <div class="manifesto">
+    <div class="manifesto-item">
+      <span class="item-label">On data</span>
+      <p>We do not sell behavioral data, viewing histories, or household patterns to anyone. We do not have a partnerships team whose job is to monetize your Tuesday night. What you watch stays where it belongs.</p>
+    </div>
+    <div class="manifesto-item">
+      <span class="item-label">On pricing</span>
+      <p>There is one price: free, for family. We will not introduce an ad-supported tier to recover the margin we lost when we removed ads we never had. We will not send a letter explaining that the new pricing better reflects the value you receive.</p>
+    </div>
+    <div class="manifesto-item">
+      <span class="item-label">On accounts</span>
+      <p>Your account does not require a credit card, a linked phone number, or consent to terms that quietly reserve the right to change the terms. You were given a username. It works. That is the entire relationship.</p>
+    </div>
+    <div class="manifesto-item">
+      <span class="item-label">On features</span>
+      <p>We do not quietly remove features and re-introduce them at the Premium tier. We do not A/B test your interface without disclosure. The play button will remain in a location you can find without a tutorial.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <p class="fine-print">Matneco Industries is a private technology company operating out of Central New York. Our products are developed for household use and are not publicly distributed. Any resemblance to a legitimate multinational conglomerate is entirely aspirational and we stand by it.</p>
+
+</main>
+
+<footer>
+  <p>Matneco Industries &mdash; All rights reserved</p>
+  <p>Syracuse, New York &mdash; Since 1985</p>
+</footer>
+
+</body>
+</html>
