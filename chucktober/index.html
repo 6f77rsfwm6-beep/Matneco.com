@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHUCKTOBER</title>
+  <style>
+    :root {
+      --bg: #fff;
+      --fg: #000;
+      --btn-bg: #d4d0c8;
+      --btn-hi: #fff;
+      --btn-sh: #808080;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000;
+        --fg: #fff;
+        --btn-bg: #3a3a3a;
+        --btn-hi: #666;
+        --btn-sh: #111;
+      }
+    }
+
+    body {
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: var(--fg);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .calendar {
+      border: 2px solid var(--fg);
+      width: min(560px, 100%);
+    }
+
+    .day-headers {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 2px solid var(--fg);
+    }
+
+    .day-header {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.4rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg);
+    }
+
+    .day-header:not(:last-child) {
+      border-right: 1px solid var(--fg);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .cell {
+      border-right: 1px solid var(--fg);
+      border-bottom: 1px solid var(--fg);
+      min-height: 90px;
+      padding: 0.3rem 0.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cell:nth-child(7n) {
+      border-right: none;
+    }
+
+    .cell:nth-last-child(-n+7) {
+      border-bottom: none;
+    }
+
+    .date-num {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--fg);
+      align-self: flex-start;
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+
+    .pumpkin {
+      width: 44px;
+      height: 44px;
+      margin: 0.2rem 0 0.1rem;
+    }
+
+    /* Keep pumpkin black parts matching theme */
+    .pumpkin .pumpkin-ink {
+      fill: var(--fg);
+    }
+
+    .chuck-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--fg);
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
+    /* Windows 95 button */
+    .win95-wrap {
+      margin-top: 1.8rem;
+    }
+
+    .win95-btn {
+      font-family: Arial, sans-serif;
+      font-size: 0.9rem;
+      color: var(--fg);
+      background: var(--btn-bg);
+      border-top: 2px solid var(--btn-hi);
+      border-left: 2px solid var(--btn-hi);
+      border-right: 2px solid var(--btn-sh);
+      border-bottom: 2px solid var(--btn-sh);
+      outline: 1px solid var(--fg);
+      padding: 4px 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      user-select: none;
+    }
+
+    .win95-btn:active {
+      border-top: 2px solid var(--btn-sh);
+      border-left: 2px solid var(--btn-sh);
+      border-right: 2px solid var(--btn-hi);
+      border-bottom: 2px solid var(--btn-hi);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CHUCKTOBER</h1>
+
+  <div class="calendar">
+    <div class="day-headers">
+      <div class="day-header">Sun</div>
+      <div class="day-header">Mon</div>
+      <div class="day-header">Tue</div>
+      <div class="day-header">Wed</div>
+      <div class="day-header">Thu</div>
+      <div class="day-header">Fri</div>
+      <div class="day-header">Sat</div>
+    </div>
+    <div class="grid" id="cal"></div>
+  </div>
+
+  <div class="win95-wrap">
+    <a class="win95-btn" href="CHUCKTOBER.ics" download="CHUCKTOBER.ics">never disappoint me again.</a>
+  </div>
+
+  <script>
+    // October 2026 starts on Thursday (index 4, Sun=0)
+    const startDay = 4;
+    const daysInMonth = 31;
+    const weekendDays = new Set([3,4,10,11,17,18,24,25,31]);
+
+    const pumpkinSVG = `
+      <svg class="pumpkin" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <rect class="pumpkin-ink" x="37" y="8" width="6" height="12" rx="2"/>
+        <ellipse cx="22" cy="48" rx="16" ry="20" fill="#F4700A"/>
+        <ellipse cx="58" cy="48" rx="16" ry="20" fill="#F4700A"/>
+        <ellipse cx="40" cy="46" rx="18" ry="22" fill="#F4700A"/>
+        <line class="pumpkin-ink" x1="24" y1="28" x2="24" y2="68" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <line class="pumpkin-ink" x1="56" y1="28" x2="56" y2="68" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <polygon class="pumpkin-ink" points="28,40 33,34 38,40"/>
+        <polygon class="pumpkin-ink" points="42,40 47,34 52,40"/>
+        <polygon class="pumpkin-ink" points="40,44 37,50 43,50"/>
+        <path class="pumpkin-ink" d="M27 56 Q31 62 35 58 Q40 65 45 58 Q49 62 53 56" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    `;
+
+    const grid = document.getElementById('cal');
+
+    for (let i = 0; i < startDay; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell empty';
+      grid.appendChild(cell);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+
+      const num = document.createElement('div');
+      num.className = 'date-num';
+      num.textContent = d;
+      cell.appendChild(num);
+
+      if (weekendDays.has(d)) {
+        cell.innerHTML += pumpkinSVG;
+        const label = document.createElement('div');
+        label.className = 'chuck-label';
+        label.textContent = 'Chuck!';
+        cell.appendChild(label);
+      }
+
+      grid.appendChild(cell);
+    }
+
+    const totalCells = startDay + daysInMonth;
+    const remainder = totalCells % 7;
+    if (remainder !== 0) {
+      for (let i = 0; i < 7 - remainder; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell empty';
+        grid.appendChild(cell);
+      }
+    }
+  </script>
+
+</body>
+</html>
