@@ -1,0 +1,55 @@
+# Ember sandbox: a throwaway Stash server with a small fake library to test Ember against.
+#   cp .env.example .env   (then edit the password)
+#   docker compose up -d --build
+#   docker compose logs -f seed      # prints the API key when seeding finishes
+name: ember-sandbox
+
+services:
+  stash:
+    image: stashapp/stash:${STASH_IMAGE_TAG:-latest}
+    container_name: ember-stash
+    restart: unless-stopped
+    ports:
+      - "${STASH_PORT:-9999}:9999"
+    environment:
+      - STASH_STASH=/data/
+      - STASH_GENERATED=/generated/
+      - STASH_METADATA=/metadata/
+      - STASH_CACHE=/cache/
+      - STASH_PORT=9999
+    volumes:
+      - ./volumes/config:/root/.stash
+      - ./volumes/media:/data
+      - ./volumes/metadata:/metadata
+      - ./volumes/cache:/cache
+      - ./volumes/blobs:/blobs
+      - ./volumes/generated:/generated
+
+  # Runs once: builds the fake library, tags it, sets the login and mints an API key.
+  seed:
+    build: ./seed
+    container_name: ember-stash-seed
+    depends_on:
+      - stash
+    restart: "no"
+    environment:
+      - STASH_URL=http://stash:9999
+      - STASH_USERNAME=${STASH_USERNAME:-ember}
+      - STASH_PASSWORD=${STASH_PASSWORD:?Set STASH_PASSWORD in .env}
+      - STASH_PUBLIC_URL=${STASH_PUBLIC_URL:-http://localhost:9999}
+    volumes:
+      - ./volumes/media:/media
+      - ./volumes/out:/out
+
+  # Optional: share the sandbox with testers outside your network via a Cloudflare Tunnel.
+  #   docker compose --profile tunnel up -d
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: ember-stash-tunnel
+    profiles: ["tunnel"]
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      - stash
